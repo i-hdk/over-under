@@ -5,12 +5,18 @@
 #include <bits/stdc++.h>
 using namespace okapi;
 
+// button for lowering down to lowest spot for intake
+//reverse drive
+
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor backL (12, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor backR (2, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontL (11, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontR (1, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
-pros::Motor roller (16, pros::E_MOTOR_GEARSET_18, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor backR (11, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor frontL (3, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
+pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
+pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -67,23 +73,62 @@ void autonomous() {}
  * operator control task will be stopped. Re-enabling the robot will restart the
  * task, not resume it from where it left off.
  */
+
+ bool aPrev = 0;
+ bool aOn = 0;
 void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
-		int right = master.get_analog(ANALOG_RIGHT_Y);
+		int right = master.get_analog(ANALOG_RIGHT_X);
+		
 		backL = left;
 		frontL = left;
+		middleL = left;
 		backR = right;
 		frontR = right;
-
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)==1){
-			roller.move_velocity(200);
-		}
-		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)==1){
-			roller.move_velocity(-200);
+		middleR = right;
+		
+		/*
+		backL = left + right;
+		frontL = left + right;
+		middleL = left + right;
+		backR = left - right;
+		frontR = left - right;
+		middleR = left - right;
+		*/
+		/*
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
+			cata.move_velocity(200);
 		}
 		else{
-			roller.move_velocity(0);
+			cata.move_velocity(0);
+		}
+		*/
+
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
+			if(!aOn){
+				cata.move_velocity(200);
+				aOn = 1;
+			}
+			else{
+				cata.move_velocity(0);
+				aOn = 0;
+			}
+			aPrev = 1;
+		}
+		else{
+			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+		}
+
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
+			intake.move_velocity(200);
+		}
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
+			intake.move_velocity(-200);
+		}
+		else{
+			intake.move_velocity(0);
 		}
 
 
