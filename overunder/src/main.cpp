@@ -9,12 +9,12 @@ using namespace okapi;
 //reverse drive
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor backR (11, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontL (3, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
-pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
+pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor backR (11, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor frontL (4, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
+pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
 pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 
@@ -80,22 +80,22 @@ void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
-		
+		/*
 		backL = left;
 		frontL = left;
 		middleL = left;
 		backR = right;
 		frontR = right;
 		middleR = right;
-		
-		/*
-		backL = left + right;
-		frontL = left + right;
-		middleL = left + right;
-		backR = left - right;
-		frontR = left - right;
-		middleR = left - right;
 		*/
+		
+		backL = left - right;
+		frontL = left - right;
+		middleL = left -right;
+		backR = left + right;
+		frontR = left + right;
+		middleR = left + right;
+		
 		/*
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
 			cata.move_velocity(200);
@@ -121,10 +121,10 @@ void opcontrol() {
 			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 		}
 
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)){
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
 			intake.move_velocity(200);
 		}
-		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_DOWN)){
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)){
 			intake.move_velocity(-200);
 		}
 		else{
