@@ -19,6 +19,21 @@ pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIO
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 
 /**
+ * @brief control left and right velocities of drivetrain, [-600,600]
+ * 
+ * @param leftVel 
+ * @param rightVel 
+ */
+void setDriveVelocity(int leftVel, int rightVel){
+	backL.move_velocity(leftVel);
+	middleL.move_velocity(leftVel);
+	frontL.move_velocity(leftVel);
+	backR.move_velocity(rightVel);
+	middleR.move_velocity(rightVel);
+	frontR.move_velocity(rightVel);
+}
+
+/**
  * Runs initialization code. This occurs as soon as the program is started.
  *
  * All other competition modes are blocked by initialize; it is recommended
