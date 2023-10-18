@@ -6,7 +6,7 @@
 using namespace okapi;
 
 // button for lowering down to lowest spot for intake
-//reverse drive
+// slower cata??
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
@@ -95,14 +95,6 @@ void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
-		/*
-		backL = left;
-		frontL = left;
-		middleL = left;
-		backR = right;
-		frontR = right;
-		middleR = right;
-		*/
 		
 		backL = left - right;
 		frontL = left - right;
