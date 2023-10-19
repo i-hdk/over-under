@@ -73,7 +73,19 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {}
+void autonomous() {
+	setDriveVelocity(100,100);
+	pros::delay(6000);
+	setDriveVelocity(0,0);
+	pros::delay(500);
+	setDriveVelocity(100,-100);
+	pros::delay(1000);
+	setDriveVelocity(0,0);
+	pros::delay(400);
+setDriveVelocity(300,300);
+	pros::delay(1000);
+	setDriveVelocity(0,0);
+}
 
 /**
  * Runs the operator control code. This function will be started in its own task
@@ -115,7 +127,7 @@ void opcontrol() {
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
 			if(!aOn){
-				cata.move_velocity(200);
+				cata.move_velocity(100);
 				aOn = 1;
 			}
 			else{
