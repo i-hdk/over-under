@@ -17,6 +17,8 @@ pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTAT
 pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
 pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+pros::ADIDigitalIn limSwitch ('H');
+
 
 /**
  * @brief control left and right velocities of drivetrain, [-600,600]
@@ -136,8 +138,15 @@ void opcontrol() {
 			}
 			aPrev = 1;
 		}
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&limSwitch.get_value()==0){
+			cata.move_velocity(100);
+		}
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==1){
+			cata.move_velocity(100);
+		}
 		else{
 			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
+			cata.move_velocity(0);
 		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)){
@@ -150,7 +159,7 @@ void opcontrol() {
 			intake.move_velocity(0);
 		}
 
-
+pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
 		pros::delay(20);
 	}
 }
