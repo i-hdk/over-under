@@ -76,11 +76,12 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	//this only for left
 	setDriveVelocity(100,100);
 	pros::delay(6000);
 	setDriveVelocity(0,0);
 	pros::delay(500);
-	setDriveVelocity(100,-100);
+	setDriveVelocity(-100,100);
 	pros::delay(1000);
 	setDriveVelocity(0,0);
 	pros::delay(400);
@@ -105,6 +106,9 @@ setDriveVelocity(300,300);
 
  bool aPrev = 0;
  bool aOn = 0;
+ bool limPrev = 0;
+ std::chrono::duration<double> elapsed_seconds;
+ auto start = std::chrono::system_clock::now();
 void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
@@ -129,7 +133,7 @@ void opcontrol() {
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
 			if(!aOn){
-				cata.move_velocity(100);
+				cata.move_velocity(200);
 				aOn = 1;
 			}
 			else{
@@ -139,10 +143,27 @@ void opcontrol() {
 			aPrev = 1;
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&limSwitch.get_value()==0){
-			cata.move_velocity(100);
+			cata.move_velocity(200);
+		}
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==0){
+			cata.move_velocity(200);
+			limPrev = 0;
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==1){
-			cata.move_velocity(100);
+			if(!limPrev){
+				start = std::chrono::system_clock::now();
+			}
+			else{
+				auto end = std::chrono::system_clock::now();
+				elapsed_seconds = end-start;
+			}
+			if(elapsed_seconds.count()>0.2){
+				cata.move_velocity(200);
+			}
+			else{
+				cata.move_velocity(0);
+			}
+			limPrev = 1;
 		}
 		else{
 			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
