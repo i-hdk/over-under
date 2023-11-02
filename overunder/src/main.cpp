@@ -76,18 +76,26 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	//this only for left
-	setDriveVelocity(100,100);
-	pros::delay(6000);
+	setDriveVelocity(-80,-80);
+	pros::delay(5500);
 	setDriveVelocity(0,0);
 	pros::delay(500);
-	setDriveVelocity(-100,100);
-	pros::delay(1000);
+	setDriveVelocity(-100,100); //reverse this for left/right side
+	pros::delay(850);
+	
 	setDriveVelocity(0,0);
+	cata.move_velocity(200);
+	pros::delay(2000);
+	cata.move_velocity(0);
+	setDriveVelocity(-300,-300);
+	pros::delay(900);
+	cata.move_velocity(0);
+	setDriveVelocity(0,0);
+	/*
 	pros::delay(400);
 setDriveVelocity(300,300);
 	pros::delay(1000);
-	setDriveVelocity(0,0);
+	setDriveVelocity(0,0);*/
 }
 
 /**
@@ -110,6 +118,12 @@ setDriveVelocity(300,300);
  std::chrono::duration<double> elapsed_seconds;
  auto start = std::chrono::system_clock::now();
 void opcontrol() {
+	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
