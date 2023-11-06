@@ -80,7 +80,7 @@ void autonomous() {
 	pros::delay(5500);
 	setDriveVelocity(0,0);
 	pros::delay(500);
-	setDriveVelocity(-100,100); //reverse this for left/right side
+	setDriveVelocity(100,-100); //reverse this for left/right side
 	pros::delay(850);
 	
 	setDriveVelocity(0,0);
@@ -127,13 +127,22 @@ void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
-		
+		/*
 		backL = left - right;
 		frontL = left - right;
 		middleL = left -right;
 		backR = left + right;
 		frontR = left + right;
-		middleR = left + right;
+		middleR = left + right;*/
+		
+		//flip::
+		
+		backL = -left - right;
+		frontL = -left - right;
+		middleL = -left -right;
+		backR = -left + right;
+		frontR = -left + right;
+		middleR = -left + right; 
 		
 		/*
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
