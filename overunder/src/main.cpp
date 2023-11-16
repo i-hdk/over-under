@@ -143,6 +143,8 @@ void opcontrol() {
 	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
