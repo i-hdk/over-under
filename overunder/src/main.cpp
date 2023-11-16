@@ -78,13 +78,13 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	/*
-	/*
+	
+	
 	setDriveVelocity(-320,-320);
 	pros::delay(2750/2-200);
 	setDriveVelocity(0,0);
 	pros::delay(500);
-	setDriveVelocity(-100,100); //reverse this for left/right side
+	setDriveVelocity(100,-100); //reverse this for left/right side
 	pros::delay(950);
 	
 	setDriveVelocity(0,0);
@@ -100,18 +100,18 @@ void autonomous() {
 setDriveVelocity(500,500);
 	pros::delay(400);
 	setDriveVelocity(0,0);
-setDriveVelocity(300,-300); //reverse this for left/right side
+setDriveVelocity(-300,300); //reverse this for left/right side
 	pros::delay(470);
 	
 	setDriveVelocity(0,0);
 	setDriveVelocity(600,600);
 	pros::delay(500);
 	setDriveVelocity(0,0);
-	/*
+	
 	pros::delay(400);
 setDriveVelocity(300,300);
 	pros::delay(1000);
-	setDriveVelocity(0,0);*/
+	setDriveVelocity(0,0);
 	
 }
 
