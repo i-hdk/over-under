@@ -18,6 +18,7 @@ pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTA
 pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::ADIDigitalIn limSwitch ('H');
+pros::ADIDigitalOut wing ('G');
 
 
 /**
@@ -44,6 +45,7 @@ void setDriveVelocity(int leftVel, int rightVel){
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
+	wing.set_value(false);
 }
 
 /**
@@ -76,26 +78,41 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	setDriveVelocity(-80,-80);
-	pros::delay(5500);
+	/*
+	/*
+	setDriveVelocity(-320,-320);
+	pros::delay(2750/2-200);
 	setDriveVelocity(0,0);
 	pros::delay(500);
-	setDriveVelocity(100,-100); //reverse this for left/right side
-	pros::delay(850);
+	setDriveVelocity(-100,100); //reverse this for left/right side
+	pros::delay(950);
 	
 	setDriveVelocity(0,0);
 	cata.move_velocity(200);
-	pros::delay(2000);
+	pros::delay(3500);
 	cata.move_velocity(0);
 	setDriveVelocity(-300,-300);
 	pros::delay(900);
 	cata.move_velocity(0);
+	setDriveVelocity(0,0);
+
+//go back
+setDriveVelocity(500,500);
+	pros::delay(400);
+	setDriveVelocity(0,0);
+setDriveVelocity(300,-300); //reverse this for left/right side
+	pros::delay(470);
+	
+	setDriveVelocity(0,0);
+	setDriveVelocity(600,600);
+	pros::delay(500);
 	setDriveVelocity(0,0);
 	/*
 	pros::delay(400);
 setDriveVelocity(300,300);
 	pros::delay(1000);
 	setDriveVelocity(0,0);*/
+	
 }
 
 /**
@@ -115,6 +132,8 @@ setDriveVelocity(300,300);
  bool aPrev = 0;
  bool aOn = 0;
  bool limPrev = 0;
+ bool wingout = 0;
+ bool leftPrev = 0;
  std::chrono::duration<double> elapsed_seconds;
  auto start = std::chrono::system_clock::now();
 void opcontrol() {
@@ -124,6 +143,7 @@ void opcontrol() {
 	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	wing.set_value(false);
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
@@ -202,6 +222,18 @@ void opcontrol() {
 		else{
 			intake.move_velocity(0);
 		}
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)&&leftPrev==0){
+			leftPrev = 1;
+			if(wingout==0){
+				wing.set_value(true);
+				wingout=1;
+			}
+			else{
+				wing.set_value(false);
+				wingout=0;
+			}
+		}
+		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT);
 
 pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
 		pros::delay(20);
