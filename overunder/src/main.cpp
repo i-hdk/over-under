@@ -158,13 +158,20 @@ void opcontrol() {
 		middleR = left + right;*/
 		
 		//flip::
-		
+		/*
 		backL = -left - right;
 		frontL = -left - right;
 		middleL = -left -right;
 		backR = -left + right;
 		frontR = -left + right;
-		middleR = -left + right; 
+		middleR = -left + right; */
+
+		backL = master.get_analog(ANALOG_RIGHT_Y);
+		frontL = master.get_analog(ANALOG_RIGHT_Y);
+		middleL = master.get_analog(ANALOG_RIGHT_Y);
+		frontR = master.get_analog(ANALOG_LEFT_Y);
+		middleR = master.get_analog(ANALOG_LEFT_Y);
+		backR = master.get_analog(ANALOG_LEFT_Y);
 		
 		/*
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
@@ -178,7 +185,7 @@ void opcontrol() {
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
 			if(!aOn){
-				cata.move_velocity(200);
+				cata.move_velocity(600);
 				aOn = 1;
 			}
 			else{
@@ -188,10 +195,10 @@ void opcontrol() {
 			aPrev = 1;
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&limSwitch.get_value()==0){
-			cata.move_velocity(200);
+			cata.move_velocity(600);
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==0){
-			cata.move_velocity(200);
+			cata.move_velocity(600);
 			limPrev = 0;
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==1){
@@ -203,7 +210,7 @@ void opcontrol() {
 				elapsed_seconds = end-start;
 			}
 			if(elapsed_seconds.count()>0.2){
-				cata.move_velocity(200);
+				cata.move_velocity(600); 
 			}
 			else{
 				cata.move_velocity(0);
