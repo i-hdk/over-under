@@ -19,7 +19,11 @@ pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIO
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::ADIDigitalIn limSwitch ('H');
 pros::ADIDigitalOut wing ('G');
+pros::Imu imu(8);
+pros::Rotation rotation(10);
 
+double width = 20;
+double vel_conversion = 1; //final has to be in rpm, so maybe move certain rotations & measure distance
 
 /**
  * @brief control left and right velocities of drivetrain, [-600,600]
@@ -36,6 +40,38 @@ void setDriveVelocity(int leftVel, int rightVel){
 	frontR.move_velocity(rightVel);
 }
 
+void setLeftVelocity(int vel){
+	backR.move_velocity(vel);
+	middleR.move_velocity(vel);
+	frontR.move_velocity(vel);
+}
+
+void setRightVelocity(int vel){
+	backL.move_velocity(vel);
+	middleL.move_velocity(vel);
+	frontL.move_velocity(vel);
+}
+
+void arcRun(double curvatureRadius, double angularSpeed){
+	//add for loop to accelerate/decelerate speed??
+	//try 20in radius
+	setLeftVelocity(vel_conversion*(curvatureRadius-width/2));
+	setRightVelocity(vel_conversion*(curvatureRadius+width/2));
+}
+
+void arcRun(double curvatureRadius, double angularSpeed, double angleChange){
+	//add for loop to accelerate/decelerate speed??
+	//try 20in radius
+	double initialAngle = imu.get_heading();
+	setLeftVelocity(vel_conversion*(curvatureRadius-width/2));
+	setRightVelocity(vel_conversion*(curvatureRadius+width/2));
+	while(abs(imu.get_heading()-initialAngle)<abs(angleChange)){
+		pros::delay(20);	
+	}
+	setLeftVelocity(0);
+	setRightVelocity(0);
+}
+
 /**
  * Runs initialization code. This occurs as soon as the program is started.
  *
@@ -46,6 +82,7 @@ void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
 	wing.set_value(false);
+	imu.reset();
 }
 
 /**
@@ -78,8 +115,9 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
-	
-	
+	setLeftVelocity(100);
+	arcRun(20,2*pi/20);
+	/* dump code
 	setDriveVelocity(-320,-320);
 	pros::delay(2750/2-200);
 	setDriveVelocity(0,0);
@@ -112,7 +150,7 @@ setDriveVelocity(-300,300); //reverse this for left/right side
 setDriveVelocity(300,300);
 	pros::delay(1000);
 	setDriveVelocity(0,0);
-	
+	*/
 }
 
 /**
@@ -149,13 +187,13 @@ void opcontrol() {
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
-		/*
+		
 		backL = left - right;
 		frontL = left - right;
 		middleL = left -right;
 		backR = left + right;
 		frontR = left + right;
-		middleR = left + right;*/
+		middleR = left + right;
 		
 		//flip::
 		/*
@@ -166,12 +204,13 @@ void opcontrol() {
 		frontR = -left + right;
 		middleR = -left + right; */
 
+/*
 		backL = master.get_analog(ANALOG_RIGHT_Y);
 		frontL = master.get_analog(ANALOG_RIGHT_Y);
 		middleL = master.get_analog(ANALOG_RIGHT_Y);
 		frontR = master.get_analog(ANALOG_LEFT_Y);
 		middleR = master.get_analog(ANALOG_LEFT_Y);
-		backR = master.get_analog(ANALOG_LEFT_Y);
+		backR = master.get_analog(ANALOG_LEFT_Y);*/
 		
 		/*
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
@@ -231,7 +270,7 @@ void opcontrol() {
 		else{
 			intake.move_velocity(0);
 		}
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT)&&leftPrev==0){
+		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)&&leftPrev==0){
 			leftPrev = 1;
 			if(wingout==0){
 				wing.set_value(true);
@@ -242,9 +281,10 @@ void opcontrol() {
 				wingout=0;
 			}
 		}
-		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_LEFT);
+		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 
 pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
+pros::lcd::set_text(2, std::to_string(rotation.get_position()));
 		pros::delay(20);
 	}
 }
