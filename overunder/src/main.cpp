@@ -83,6 +83,8 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 	wing.set_value(false);
 	imu.reset();
+	rotation.reset();
+	rotation.reset_position();
 }
 
 /**
@@ -184,6 +186,7 @@ void opcontrol() {
 	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
+	rotation.set_position(0);
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
@@ -233,13 +236,14 @@ void opcontrol() {
 			}
 			aPrev = 1;
 		}
-		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&limSwitch.get_value()==0){
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&(rotation.get_position()<3*18000+4000)){
 			cata.move_velocity(600);
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==0){
 			cata.move_velocity(600);
 			limPrev = 0;
 		}
+		//&&limSwitch.get_value()==1
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==1){
 			if(!limPrev){
 				start = std::chrono::system_clock::now();
@@ -284,7 +288,7 @@ void opcontrol() {
 		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 
 pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
-pros::lcd::set_text(2, std::to_string(rotation.get_position()));
+pros::lcd::set_text(2, std::to_string(rotation.get_position()%(36000*5)));
 		pros::delay(20);
 	}
 }
