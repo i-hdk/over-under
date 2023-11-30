@@ -22,8 +22,14 @@ pros::ADIDigitalOut wing ('G');
 pros::Imu imu(8);
 pros::Rotation rotation(10);
 
-double width = 20;
-double vel_conversion = 1; //final has to be in rpm, so maybe move certain rotations & measure distance
+double width = 11.75;
+double vel_conversion = 1/6.5*60; //final has to be in rpm, so maybe move certain rotations & measure distance
+//goes 6.5 per rotation
+bool trapezoidal = false, trapezoidalPrev = false;
+double trapezoidal_accelTime, trapezoidal_constantTime, trapezoidal_flatVel;
+bool curve = 0;
+ std::chrono::duration<double> elapsed_seconds;
+ auto start = std::chrono::system_clock::now();
 
 /**
  * @brief control left and right velocities of drivetrain, [-600,600]
@@ -55,21 +61,74 @@ void setRightVelocity(int vel){
 void arcRun(double curvatureRadius, double angularSpeed){
 	//add for loop to accelerate/decelerate speed??
 	//try 20in radius
-	setLeftVelocity(vel_conversion*(curvatureRadius-width/2));
-	setRightVelocity(vel_conversion*(curvatureRadius+width/2));
+	setLeftVelocity(vel_conversion*angularSpeed*(curvatureRadius-width/2));
+	setRightVelocity(vel_conversion*angularSpeed*(curvatureRadius+width/2));
 }
 
-void arcRun(double curvatureRadius, double angularSpeed, double angleChange){
+void arcRun(double curvatureRadius, double angularSpeed, double targetAngle){
 	//add for loop to accelerate/decelerate speed??
 	//try 20in radius
-	double initialAngle = imu.get_heading();
 	setLeftVelocity(vel_conversion*(curvatureRadius-width/2));
 	setRightVelocity(vel_conversion*(curvatureRadius+width/2));
-	while(abs(imu.get_heading()-initialAngle)<abs(angleChange)){
+	while(abs(imu.get_heading()-targetAngle)>2){
 		pros::delay(20);	
 	}
 	setLeftVelocity(0);
 	setRightVelocity(0);
+}
+
+//void arcRun(double curvatureRadius, double accelTime, double ds,double ds){}
+double t = -1; //for use in task
+std::chrono::steady_clock::time_point begin;
+void backgroundTask(){
+	while(1){
+
+		if(trapezoidal){
+			pros::lcd::set_text(7, std::to_string(t));
+			double vel;
+			if(trapezoidalPrev==0){
+				start = std::chrono::system_clock::now();
+				begin = std::chrono::steady_clock::now();
+				//pros::lcd::set_text(1, "prev 0");
+	
+			}
+			else{
+				pros::lcd::set_text(5, "prev 1");
+			}
+			//auto end = std::chrono::system_clock::now();
+			std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+			//auto elapsed = end-start;
+			t = (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0;
+			//interpolate
+			if(t<=trapezoidal_accelTime){
+				vel = t/trapezoidal_accelTime*trapezoidal_flatVel;
+				pros::lcd::set_text(6, std::to_string(vel));
+				pros::lcd::set_text(1, std::to_string(trapezoidal_accelTime));
+				pros::lcd::set_text(2, std::to_string(trapezoidal_flatVel));
+			}
+			else if(t>=trapezoidal_accelTime&&t<=trapezoidal_constantTime+trapezoidal_accelTime){
+				vel = trapezoidal_flatVel;
+				pros::lcd::set_text(6, "here");
+			}
+			else if(t<=trapezoidal_constantTime+trapezoidal_accelTime*2){
+				vel = trapezoidal_flatVel-(t-trapezoidal_constantTime-trapezoidal_accelTime)/trapezoidal_accelTime*trapezoidal_flatVel;
+			}
+			else if(t>trapezoidal_constantTime+trapezoidal_accelTime*2){
+				vel = 0;
+				trapezoidal = 0;
+			}
+			if(curve){
+			}
+			else{
+				setLeftVelocity(vel);
+				setRightVelocity(vel);
+			}
+		}
+		pros::lcd::set_text(3, "e");
+		trapezoidalPrev = trapezoidal;
+		pros::lcd::set_text(4, std::to_string(trapezoidalPrev));
+		pros::delay(10);
+	}
 }
 
 /**
@@ -85,6 +144,15 @@ void initialize() {
 	imu.reset();
 	rotation.reset();
 	rotation.reset_position();
+	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	pros::Task my_task(backgroundTask);
 }
 
 /**
@@ -116,43 +184,46 @@ void competition_initialize() {}
  * will be stopped. Re-enabling the robot will restart the task, not re-start it
  * from where it left off.
  */
-void autonomous() {
-	setLeftVelocity(100);
-	arcRun(20,2*pi/20);
-	/* dump code
-	setDriveVelocity(-320,-320);
-	pros::delay(2750/2-200);
-	setDriveVelocity(0,0);
-	pros::delay(500);
-	setDriveVelocity(100,-100); //reverse this for left/right side
-	pros::delay(950);
-	
-	setDriveVelocity(0,0);
-	cata.move_velocity(200);
-	pros::delay(3500);
-	cata.move_velocity(0);
-	setDriveVelocity(-300,-300);
-	pros::delay(900);
-	cata.move_velocity(0);
-	setDriveVelocity(0,0);
 
-//go back
-setDriveVelocity(500,500);
-	pros::delay(400);
-	setDriveVelocity(0,0);
-setDriveVelocity(-300,300); //reverse this for left/right side
-	pros::delay(470);
-	
-	setDriveVelocity(0,0);
-	setDriveVelocity(600,600);
-	pros::delay(500);
-	setDriveVelocity(0,0);
-	
-	pros::delay(400);
-setDriveVelocity(300,300);
-	pros::delay(1000);
-	setDriveVelocity(0,0);
+void runTrapezoid(double accel, double ct, double fv, bool arc){
+	curve = arc;
+	trapezoidal_accelTime =  accel;
+	trapezoidal_constantTime = ct;
+	trapezoidal_flatVel = fv;
+	trapezoidal = 1;
+}
+
+void autonomous() {
+	//arcRun(10,2*pi/20,270);
+	/*
+	trapezoidal_accelTime =  0.4;
+	trapezoidal_constantTime = 0.5;
+	trapezoidal_flatVel = 600;
+	trapezoidal = 1;
 	*/
+	imu.set_heading(360-45);
+	runTrapezoid(0.1, 0.3, 100, 0);
+	while(trapezoidal==1) pros::delay(10);
+	wing.set_value(1);
+	runTrapezoid(0.1, 0.3, -100, 0);
+	while(trapezoidal==1) pros::delay(10);
+		pros::delay(500);
+	setLeftVelocity(-400);
+	setRightVelocity(400);
+	pros::delay(600);
+	setLeftVelocity(0);
+	setRightVelocity(0);
+	setLeftVelocity(-100);
+	setRightVelocity(100);
+	while(abs(imu.get_heading()-50)>2){
+		pros::delay(20);	
+	}
+	setLeftVelocity(0);
+	setRightVelocity(0);
+	wing.set_value(0);
+	runTrapezoid(0.1, 0.5, 400, 0);
+	while(trapezoidal==1) pros::delay(10);
+	arcRun(10,2.5*pi/20,270);
 }
 
 /**
@@ -174,9 +245,9 @@ setDriveVelocity(300,300);
  bool limPrev = 0;
  bool wingout = 0;
  bool leftPrev = 0;
- std::chrono::duration<double> elapsed_seconds;
- auto start = std::chrono::system_clock::now();
+
 void opcontrol() {
+	trapezoidal=0;
 	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -187,6 +258,7 @@ void opcontrol() {
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
 	rotation.set_position(0);
+	aOn = false;
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
@@ -224,8 +296,13 @@ void opcontrol() {
 		}
 		*/
 
+		if(aOn&&rotation.get_position()%(18000*4)>65000&&rotation.get_position()%(18000*4)<18000*4){
+			aOn = false;
+			cata.move_velocity(0);
+		}
 
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
+			pros::lcd::set_text(5, "dfsdfsd");
 			if(!aOn){
 				cata.move_velocity(600);
 				aOn = 1;
@@ -236,7 +313,7 @@ void opcontrol() {
 			}
 			aPrev = 1;
 		}
-		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&(rotation.get_position()<3*18000+4000)){
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_X)==1&&(rotation.get_position()%(18000*4)<70000)){
 			cata.move_velocity(600);
 		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==0){
@@ -260,7 +337,7 @@ void opcontrol() {
 			}
 			limPrev = 1;
 		}
-		else{
+		else if(aOn==0){
 			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 			cata.move_velocity(0);
 		}
@@ -286,9 +363,11 @@ void opcontrol() {
 			}
 		}
 		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
-
+aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
-pros::lcd::set_text(2, std::to_string(rotation.get_position()%(36000*5)));
+pros::lcd::set_text(2, std::to_string(rotation.get_position()%(18000*4)));
+pros::lcd::set_text(3, std::to_string(imu.get_heading()));
+pros::lcd::set_text(4, std::to_string(rotation.get_position()%(18000*5)));
 		pros::delay(20);
 	}
 }
