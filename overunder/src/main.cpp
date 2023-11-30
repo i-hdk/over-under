@@ -105,13 +105,9 @@ void backgroundTask(){
 			//interpolate
 			if(t<=trapezoidal_accelTime){
 				vel = t/trapezoidal_accelTime*trapezoidal_flatVel;
-				pros::lcd::set_text(6, std::to_string(vel));
-				pros::lcd::set_text(1, std::to_string(trapezoidal_accelTime));
-				pros::lcd::set_text(2, std::to_string(trapezoidal_flatVel));
 			}
 			else if(t>=trapezoidal_accelTime&&t<=trapezoidal_constantTime+trapezoidal_accelTime){
 				vel = trapezoidal_flatVel;
-				pros::lcd::set_text(6, "here");
 			}
 			else if(t<=trapezoidal_constantTime+trapezoidal_accelTime*2){
 				vel = trapezoidal_flatVel-(t-trapezoidal_constantTime-trapezoidal_accelTime)/trapezoidal_accelTime*trapezoidal_flatVel;
