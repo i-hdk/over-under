@@ -25,7 +25,7 @@ pros::Rotation rotation(10);
 double width = 11.75;
 double vel_conversion = 1/6.5*60; //final has to be in rpm, so maybe move certain rotations & measure distance
 //goes 6.5 per rotation
-bool toggleTurnPID = false, turnRight, turnPrev = false; 
+bool toggleTurnPID = false, turnLeft, turnPrev = false; 
 double turnTarget, turnP = 4, turnI = 0.01, turnD = 1, turnPrevError, turnTotalError;
 bool trapezoidal = false, trapezoidalPrev = false;
 double trapezoidal_accelTime, trapezoidal_constantTime, trapezoidal_flatVel;
@@ -71,8 +71,8 @@ void arcRun(double curvatureRadius, double angularSpeed){
 void arcRun(double curvatureRadius, double angularSpeed, double targetAngle){
 	//add for loop to accelerate/decelerate speed??
 	//try 20in radius
-	setLeftVelocity(vel_conversion*(curvatureRadius-width/2));
-	setRightVelocity(vel_conversion*(curvatureRadius+width/2));
+	setRightVelocity(vel_conversion*(curvatureRadius-width/2));
+	setLeftVelocity(vel_conversion*(curvatureRadius+width/2));
 	while(abs(imu.get_heading()-targetAngle)>2){
 		pros::delay(20);	
 	}
@@ -139,8 +139,14 @@ void backgroundTask(){
 			pros::lcd::set_text(4, std::to_string(error));
 			if(abs(error)>3){
 				double vel = turnP*error+turnI*turnTotalError+turnD*(error-turnPrevError);
+				if(turnLeft){
+					setRightVelocity(vel);
+					setLeftVelocity(-vel); 
+				}
+				else{
 				setRightVelocity(-vel);
 				setLeftVelocity(vel); 
+				}
 			}
 			else{
 				setRightVelocity(0);
@@ -176,6 +182,7 @@ void initialize() {
 	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	rotation.set_position(0);
 	pros::Task my_task(backgroundTask);
 }
 
@@ -244,36 +251,78 @@ void turnPID(double angle, double timeOut){
 
 
 void autonomous() {
-/*
-	imu.set_heading(10);
-	pros::lcd::set_text(2, std::to_string(imu.get_heading()));
-	pros::delay(100);
-turnPID(20,8);*/
+
+
+	turnLeft = false;
 	
+	//intake.move_velocity(-600);
+	//pros::delay(1000);
+	//	intake.move_velocity(0);
 	cata.move_velocity(600);
-	pros::delay(500);
+	pros::delay(200);
 	cata.move_velocity(0);
 	imu.set_heading(360-45);
 	runTrapezoid(0.1, 0.3, 100);
+	
+	
+
 	while(trapezoidal==1) pros::delay(10);
 	wing.set_value(1);
 	pros::delay(1000);
 	runTrapezoid(0.1, 0.3, -100);
 	while(trapezoidal==1) pros::delay(10);
 		pros::delay(1000);
-		turnPID(90,4);
-	//setLeftVelocity(-100);
-	//setRightVelocity(100);
-	//while(abs(imu.get_heading()-50)>2){
-	//	pros::delay(20);	
-	//}
-	/*
-	turnPID(90,2);
-	wing.set_value(0);
-	runTrapezoid(0.1, 0.5, 400);
+		turnPID(105,3);
+		wing.set_value(0);
+	//cata.move_velocity(600);
+	//while(!(rotation.get_position()%(18000*4)>14000&&rotation.get_position()%(18000*4)<18000)) pros::delay(10);
+	//cata.move_velocity(0);
+	pros::delay(1000);
+	intake.move_velocity(-600);
+	runTrapezoid(0.25, 0.4, 600);
 	while(trapezoidal==1) pros::delay(10);
-	//arcRun(10,2.5*pi/20,270);*/
+	cata.move_velocity(600);
+	while(!(rotation.get_position()%(18000*4)>26000&&rotation.get_position()%(18000*4)<32000)){
+	pros::delay(20);
+		}
+		cata.move_velocity(0);
+
+
+
+
+	/*
+	cata.move_velocity(600);
+	pros::delay(100);
+	cata.move_velocity(0);
+	imu.set_heading(0);
+	cata.move_velocity(600);
+	while(!((rotation.get_position()%(18000*4)>18000*4-1000&&rotation.get_position()<=0)||rotation.get_position()%(18000*4)<2000)) pros::delay(10);
+	cata.move_velocity(0);
+	intake.move_velocity(600);
+	pros::delay(500);
+	intake.move_velocity(0);
+	pros::delay(1000);
+	runTrapezoid(0.4, 0.5, 600);
+	while(trapezoidal==1) pros::delay(10);
+	pros::delay(1000);
+	turnPID(90,3);
+	intake.move_velocity(-600);
+	runTrapezoid(0.1, 0.2, 600);
+	while(trapezoidal==1) pros::delay(10);
+	*/
 	
+	/*
+	//skill:
+	imu.set_heading(100);
+	intake.move_velocity(-600);
+	pros::delay(1000);
+	intake.move_velocity(0);
+	turnPID(90,1);
+	//runTrapezoid(0.2, 0.3, 150);
+	//while(trapezoidal==1) pros::delay(10);
+	pros::delay(1000);
+	cata.move_velocity(600);
+	*/
 }
 
 /**
@@ -294,6 +343,8 @@ turnPID(20,8);*/
  bool aOn = 0;
  bool xPrev = 0;
  bool xOn = 0;
+ bool bPrev = 0;
+ bool bOn = 0;
  bool limPrev = 0;
  bool wingout = 0;
  bool leftPrev = 0;
@@ -310,9 +361,11 @@ void opcontrol() {
 	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
-	rotation.set_position(0);
+	
 	aOn = false;
 	xOn = false;
+	bOn = false;
+
 	while (true) {
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
@@ -350,15 +403,24 @@ void opcontrol() {
 		}
 		*/
 
-		if(aOn&&rotation.get_position()%(18000*4)>58500&&rotation.get_position()%(18000*4)<18000*4){
+		if(aOn&&rotation.get_position()%(18000*4)>31000&&rotation.get_position()%(18000*4)<18000*4){
 			aOn = false;
 			cata.move_velocity(0);
 		}
-		if(xOn&&((rotation.get_position()%(18000*4)>18000*4-1000&&rotation.get_position()<=0)||rotation.get_position()%(18000*4)<2000)){
+//		if(xOn&&((rotation.get_position()%(18000*4)>18000*4-1000&&rotation.get_position()<=0)||rotation.get_position()%(18000*4)<2000)){
+
+		if(xOn&&(rotation.get_position()%(18000*4)>32500&&rotation.get_position()%(18000*4)<36000)){
 			xOn = false;
 			cata.move_velocity(0);
 		}
-
+		if(bOn){
+			std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+		t = (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0;
+		if(t>=0.1){
+			cata.move_velocity(0);
+			bOn = 0;
+		}
+		}
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)==1&&aPrev==0){
 			pros::lcd::set_text(5, "dfsdfsd");
 			if(!aOn){
@@ -382,6 +444,12 @@ void opcontrol() {
 			}
 			xPrev = 1;
 		}
+		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_B)==1&&bPrev==0){
+			cata.move_velocity(600);
+			bOn = 1;
+			bPrev =1;
+			begin = std::chrono::steady_clock::now();
+		}
 		else if(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)==1&&limSwitch.get_value()==0){
 			cata.move_velocity(600);
 			limPrev = 0;
@@ -403,7 +471,7 @@ void opcontrol() {
 			}
 			limPrev = 1;
 		}
-		else if(aOn==0&&xOn==0){
+		else if(aOn==0&&xOn==0&&bOn==0){
 			aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 			xPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_X);
 			cata.move_velocity(0);
@@ -432,6 +500,7 @@ void opcontrol() {
 		leftPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
 aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 xPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_X);
+bPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_B);
 pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
 pros::lcd::set_text(2, std::to_string(rotation.get_position()%(18000*4)));
 pros::lcd::set_text(3, std::to_string(imu.get_heading()));
