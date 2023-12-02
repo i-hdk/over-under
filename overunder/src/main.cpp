@@ -252,15 +252,15 @@ void turnPID(double angle, double timeOut){
 
 void autonomous() {
 
-
+/*
 	turnLeft = false;
 	
-	//intake.move_velocity(-600);
-	//pros::delay(1000);
-	//	intake.move_velocity(0);
-	cata.move_velocity(600);
-	pros::delay(200);
-	cata.move_velocity(0);
+	intake.move_velocity(-600);
+	pros::delay(1000);
+		intake.move_velocity(0);
+	//cata.move_velocity(600);
+	//pros::delay(200);
+	//cata.move_velocity(0);
 	imu.set_heading(360-45);
 	runTrapezoid(0.1, 0.3, 100);
 	
@@ -279,15 +279,15 @@ void autonomous() {
 	//cata.move_velocity(0);
 	pros::delay(1000);
 	intake.move_velocity(-600);
-	runTrapezoid(0.25, 0.4, 600);
+	runTrapezoid(0.3, 0.4, 600);
 	while(trapezoidal==1) pros::delay(10);
-	cata.move_velocity(600);
-	while(!(rotation.get_position()%(18000*4)>26000&&rotation.get_position()%(18000*4)<32000)){
-	pros::delay(20);
-		}
-		cata.move_velocity(0);
+	//cata.move_velocity(600);
+	//while(!(rotation.get_position()%(18000*4)>26000&&rotation.get_position()%(18000*4)<32000)){
+	//pros::delay(20);
+		
+	//	cata.move_velocity(0);
 
-
+*/
 
 
 	/*
@@ -311,18 +311,49 @@ void autonomous() {
 	while(trapezoidal==1) pros::delay(10);
 	*/
 	
-	/*
+	
 	//skill:
-	imu.set_heading(100);
+	imu.set_heading(30);
 	intake.move_velocity(-600);
-	pros::delay(1000);
+	
+	pros::delay(500);
 	intake.move_velocity(0);
-	turnPID(90,1);
-	//runTrapezoid(0.2, 0.3, 150);
+
+	turnPID(10,1);
+	runTrapezoid(0.1, 0.1, 100);
+	while(trapezoidal==1) pros::delay(10);
+	intake.move_velocity(0);
+	//pros::delay(500);
+	//runTrapezoid(0.2, 0.2, 150);
 	//while(trapezoidal==1) pros::delay(10);
-	pros::delay(1000);
+	//setLeftVelocity(5);
 	cata.move_velocity(600);
-	*/
+	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	imu.set_heading(40);
+	//pros::delay(1000);
+	pros::delay(40000);
+	while(!(rotation.get_position()%(18000*4)>32500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
+	cata.move_velocity(0);
+    turnPID(65,2);
+	pros::delay(1000);
+	runTrapezoid(0.4, 1.4, -600);
+	while(trapezoidal==1) pros::delay(10);
+	//imu.set_heading(90);
+	pros::delay(500);
+	turnPID(60,1);
+imu.set_heading(100);
+pros::delay(1000);
+turnPID(55,1);
+	runTrapezoid(0.1, 0.2, -600);
+	while(trapezoidal==1) pros::delay(10);
+	turnPID(10,1);
+	runTrapezoid(0.4, 0.8, -600);
+	while(trapezoidal==1) pros::delay(10);
 }
 
 /**
@@ -392,7 +423,8 @@ void opcontrol() {
 		middleL = master.get_analog(ANALOG_RIGHT_Y);
 		frontR = master.get_analog(ANALOG_LEFT_Y);
 		middleR = master.get_analog(ANALOG_LEFT_Y);
-		backR = master.get_analog(ANALOG_LEFT_Y);*/
+		backR = master.get_analog(ANALOG_LEFT_Y);
+		*/
 		
 		/*
 		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
