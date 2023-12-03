@@ -252,7 +252,7 @@ void turnPID(double angle, double timeOut){
 
 void autonomous() {
 
-/*
+
 	turnLeft = false;
 	
 	intake.move_velocity(-600);
@@ -274,38 +274,45 @@ void autonomous() {
 		pros::delay(1000);
 		turnPID(105,3);
 		wing.set_value(0);
-	//cata.move_velocity(600);
-	//while(!(rotation.get_position()%(18000*4)>14000&&rotation.get_position()%(18000*4)<18000)) pros::delay(10);
-	//cata.move_velocity(0);
-	pros::delay(1000);
+	cata.move_velocity(600);
+	while(!(rotation.get_position()%(18000*4)>31500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
+	cata.move_velocity(0);
+	//pros::delay(1000);
 	intake.move_velocity(-600);
-	runTrapezoid(0.3, 0.4, 600);
+	runTrapezoid(0.4, 0.25, 600);
 	while(trapezoidal==1) pros::delay(10);
+	pros::delay(100);
+	runTrapezoid(0.4, 0.25, -600);
+	while(trapezoidal==1) pros::delay(10);
+	turnPID(90,2);
 	//cata.move_velocity(600);
 	//while(!(rotation.get_position()%(18000*4)>26000&&rotation.get_position()%(18000*4)<32000)){
 	//pros::delay(20);
 		
 	//	cata.move_velocity(0);
 
-*/
+
 
 
 	/*
-	cata.move_velocity(600);
-	pros::delay(100);
+	intake.move_velocity(-600);
+	pros::delay(200);
+		intake.move_velocity(0);
+
+
+cata.move_velocity(600);
+	while(!(rotation.get_position()%(18000*4)>32500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
 	cata.move_velocity(0);
-	imu.set_heading(0);
-	cata.move_velocity(600);
-	while(!((rotation.get_position()%(18000*4)>18000*4-1000&&rotation.get_position()<=0)||rotation.get_position()%(18000*4)<2000)) pros::delay(10);
-	cata.move_velocity(0);
+	imu.set_heading(100);
+	
 	intake.move_velocity(600);
-	pros::delay(500);
+	pros::delay(1000);
 	intake.move_velocity(0);
 	pros::delay(1000);
-	runTrapezoid(0.4, 0.5, 600);
+	runTrapezoid(0.4, 0.4, 600);
 	while(trapezoidal==1) pros::delay(10);
 	pros::delay(1000);
-	turnPID(90,3);
+	turnPID(10,3);
 	intake.move_velocity(-600);
 	runTrapezoid(0.1, 0.2, 600);
 	while(trapezoidal==1) pros::delay(10);
@@ -313,6 +320,7 @@ void autonomous() {
 	
 	
 	//skill:
+	/*
 	imu.set_heading(30);
 	intake.move_velocity(-600);
 	
@@ -354,6 +362,7 @@ turnPID(55,1);
 	turnPID(10,1);
 	runTrapezoid(0.4, 0.8, -600);
 	while(trapezoidal==1) pros::delay(10);
+	*/
 }
 
 /**
@@ -441,7 +450,7 @@ void opcontrol() {
 		}
 //		if(xOn&&((rotation.get_position()%(18000*4)>18000*4-1000&&rotation.get_position()<=0)||rotation.get_position()%(18000*4)<2000)){
 
-		if(xOn&&(rotation.get_position()%(18000*4)>32500&&rotation.get_position()%(18000*4)<36000)){
+		if(xOn&&(rotation.get_position()%(18000*4)>31500&&rotation.get_position()%(18000*4)<36000)){
 			xOn = false;
 			cata.move_velocity(0);
 		}
