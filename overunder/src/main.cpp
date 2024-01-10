@@ -15,7 +15,7 @@ using namespace okapi;
 //pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
 //pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 //pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::ADIDigitalOut wing ('G');
+//pros::ADIDigitalOut wing ('G');
 pros::Imu imu(8);
 //pros::Rotation rotation(10);
 
@@ -167,7 +167,7 @@ void backgroundTask(){
 void initialize() {
 	pros::lcd::initialize();
 	pros::lcd::set_text(1, "Hello PROS User!");
-	wing.set_value(false);
+	//wing.set_value(false);
 	imu.reset();
 	Cata::intialize();
 	Intake::initialize();	
@@ -255,13 +255,13 @@ void autonomous() {
 	
 
 	while(trapezoidal==1) pros::delay(10);
-	wing.set_value(1);
+	//wing.set_value(1);
 	pros::delay(1000);
 	runTrapezoid(0.1, 0.3, -100);
 	while(trapezoidal==1) pros::delay(10);
 		pros::delay(1000);
 		turnPID(105,3);
-		wing.set_value(0);
+		//wing.set_value(0);
 	//cata.move_velocity(600);
 	//while(!(rotation.get_position()%(18000*4)>31500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
 	//cata.move_velocity(0);
@@ -388,7 +388,7 @@ void opcontrol() {
 	//frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	//cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	//intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	wing.set_value(false);
+	//wing.set_value(false);
 	
 	aOn = false;
 	xOn = false;

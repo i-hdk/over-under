@@ -11,6 +11,7 @@
 #include "chassis.h"
 #include "cata.h"
 #include "intake.h"
+#include "wing.h"
 
 using namespace okapi;
 

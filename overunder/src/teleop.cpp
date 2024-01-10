@@ -56,5 +56,8 @@ void Teleop::periodic(){
         intake->run(0);
     }
 
+    Wing* wing = Wing::getInstance();
+    if(toggle(pros::E_CONTROLLER_DIGITAL_L1)) wing->change();
+
     for(auto u:buttons) prev[u] = master.get_digital(u);
 }
