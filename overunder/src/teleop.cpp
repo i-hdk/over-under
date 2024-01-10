@@ -43,8 +43,18 @@ void Teleop::periodic(){
     else if(!cata->isRunning()){
         cata->run(0);
     }
-
     cata->periodic();
+
+    Intake* intake = Intake::getInstance();
+    if(hold(pros::E_CONTROLLER_DIGITAL_R1)) {
+        intake->runIn();
+    }
+    else if(hold(pros::E_CONTROLLER_DIGITAL_R2)){
+        intake->runOut();
+    }
+    else{
+        intake->run(0);
+    }
 
     for(auto u:buttons) prev[u] = master.get_digital(u);
 }

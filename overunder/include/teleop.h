@@ -10,6 +10,7 @@
 #include "pros/misc.h"
 #include "chassis.h"
 #include "cata.h"
+#include "intake.h"
 
 using namespace okapi;
 
