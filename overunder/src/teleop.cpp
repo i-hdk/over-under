@@ -1,5 +1,5 @@
-#include <bits/stdc++.h>
 #include "teleop.h"
+
 
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
@@ -25,8 +25,8 @@ bool Teleop::hold(pros::controller_digital_e_t button){
 void Teleop::periodic(){
     int left = master.get_analog(ANALOG_LEFT_Y);
     int right = master.get_analog(ANALOG_RIGHT_X);
-    //TODO: SEND DRIVE SPEEDS TO CHASSIS CLASS
-
-
+    Chassis* drive = Chassis::getInstance();
+    drive->setRightVoltage(left-right);
+    drive->setLeftVoltage(left+right);
     for(auto u:buttons) prev[u] = master.get_digital(u);
 }

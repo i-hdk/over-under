@@ -6,13 +6,13 @@
 #include "teleop.h"
 using namespace okapi;
 
-pros::Controller master(pros::E_CONTROLLER_MASTER);
-pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor backR (11, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontL (4, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
-pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
-pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
+//pros::Controller master(pros::E_CONTROLLER_MASTER);
+//pros::Motor backL (1, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+//pros::Motor backR (11, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+//pros::Motor frontL (4, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS);
+//pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
+//pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+//pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
 pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::ADIDigitalIn limSwitch ('H');
@@ -39,24 +39,24 @@ bool curve = 0;
  * @param rightVel 
  */
 void setDriveVelocity(int leftVel, int rightVel){
-	backL.move_velocity(leftVel);
-	middleL.move_velocity(leftVel);
-	frontL.move_velocity(leftVel);
-	backR.move_velocity(rightVel);
-	middleR.move_velocity(rightVel);
-	frontR.move_velocity(rightVel);
+	//backL.move_velocity(leftVel);
+	//middleL.move_velocity(leftVel);
+	//frontL.move_velocity(leftVel);
+	//backR.move_velocity(rightVel);
+	//middleR.move_velocity(rightVel);
+	//frontR.move_velocity(rightVel);
 }
 
 void setLeftVelocity(int vel){
-	backR.move_velocity(vel);
-	middleR.move_velocity(vel);
-	frontR.move_velocity(vel);
+	//backR.move_velocity(vel);
+	//middleR.move_velocity(vel);
+	//frontR.move_velocity(vel);
 }
 
 void setRightVelocity(int vel){
-	backL.move_velocity(vel);
-	middleL.move_velocity(vel);
-	frontL.move_velocity(vel);
+	//backL.move_velocity(vel);
+	//middleL.move_velocity(vel);
+	//frontL.move_velocity(vel);
 }
 
 void arcRun(double curvatureRadius, double angularSpeed){
@@ -152,7 +152,7 @@ void backgroundTask(){
 				
 			}
 			turnPrevError = error;
-			pros::lcd::set_text(3, std::to_string(backL.get_actual_velocity()));
+			//pros::lcd::set_text(3, std::to_string(backL.get_actual_velocity()));
 		}
 		turnPrev = toggleTurnPID;
 		pros::delay(10);
@@ -172,15 +172,16 @@ void initialize() {
 	imu.reset();
 	rotation.reset();
 	rotation.reset_position();
-	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	rotation.set_position(0);
+	
 	pros::Task my_task(backgroundTask);
 }
 
@@ -390,12 +391,12 @@ turnPID(55,1);
 void opcontrol() {
 	trapezoidal=0;
 	toggleTurnPID = 0;
-	backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
@@ -404,9 +405,11 @@ void opcontrol() {
 	xOn = false;
 	bOn = false;
 
-	Teleop teleop;
 	while (true) {
+		Teleop teleop;
 		teleop.periodic();
+
+		/*
 		int left = master.get_analog(ANALOG_LEFT_Y);
 		int right = master.get_analog(ANALOG_RIGHT_X);
 		
@@ -416,33 +419,8 @@ void opcontrol() {
 		backR = left + right;
 		frontR = left + right;
 		middleR = left + right;
-
-		//flip::
-		/*
-		backL = -left - right;
-		frontL = -left - right;
-		middleL = -left -right;
-		backR = -left + right;
-		frontR = -left + right;
-		middleR = -left + right; */
-
-/*
-		backL = master.get_analog(ANALOG_RIGHT_Y);
-		frontL = master.get_analog(ANALOG_RIGHT_Y);
-		middleL = master.get_analog(ANALOG_RIGHT_Y);
-		frontR = master.get_analog(ANALOG_LEFT_Y);
-		middleR = master.get_analog(ANALOG_LEFT_Y);
-		backR = master.get_analog(ANALOG_LEFT_Y);
-		*/
+todo: reverse so motors r in correct orientation
 		
-		/*
-		if(master.get_digital(pros::E_CONTROLLER_DIGITAL_A)){
-			cata.move_velocity(200);
-		}
-		else{
-			cata.move_velocity(0);
-		}
-		*/
 
 		if(aOn&&rotation.get_position()%(18000*4)>31000&&rotation.get_position()%(18000*4)<18000*4){
 			aOn = false;
@@ -542,10 +520,12 @@ void opcontrol() {
 aPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_A);
 xPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_X);
 bPrev = master.get_digital(pros::E_CONTROLLER_DIGITAL_B);
-pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
+//pros::lcd::set_text(1, std::to_string(limSwitch.get_value()));
 pros::lcd::set_text(2, std::to_string(rotation.get_position()%(18000*4)));
 pros::lcd::set_text(3, std::to_string(imu.get_heading()));
 pros::lcd::set_text(4, std::to_string(rotation.get_position()%(18000*5)));
+		
+		*/
 		pros::delay(20);
 	}
 }
