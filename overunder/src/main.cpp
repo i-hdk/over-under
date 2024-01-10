@@ -13,12 +13,12 @@ using namespace okapi;
 //pros::Motor frontR (13, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS); 
 //pros::Motor middleL (2, pros::E_MOTOR_GEARSET_06, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 //pros::Motor middleR (12, pros::E_MOTOR_GEARSET_06, 0, pros::E_MOTOR_ENCODER_ROTATIONS); 
-pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
+//pros::Motor cata (20, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::Motor intake (9, pros::E_MOTOR_GEARSET_18, 1, pros::E_MOTOR_ENCODER_ROTATIONS);
 pros::ADIDigitalIn limSwitch ('H');
 pros::ADIDigitalOut wing ('G');
 pros::Imu imu(8);
-pros::Rotation rotation(10);
+//pros::Rotation rotation(10);
 
 double width = 11.75;
 double vel_conversion = 1/6.5*60; //final has to be in rpm, so maybe move certain rotations & measure distance
@@ -170,17 +170,8 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 	wing.set_value(false);
 	imu.reset();
-	rotation.reset();
-	rotation.reset_position();
-	//backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	//backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	//middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	//middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	//frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	//frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	Cata::intialize();
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	rotation.set_position(0);
 	
 	pros::Task my_task(backgroundTask);
 }
@@ -273,9 +264,9 @@ void autonomous() {
 		pros::delay(1000);
 		turnPID(105,3);
 		wing.set_value(0);
-	cata.move_velocity(600);
-	while(!(rotation.get_position()%(18000*4)>31500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
-	cata.move_velocity(0);
+	//cata.move_velocity(600);
+	//while(!(rotation.get_position()%(18000*4)>31500&&rotation.get_position()%(18000*4)<36000)) pros::delay(10);
+	//cata.move_velocity(0);
 	//pros::delay(1000);
 	intake.move_velocity(-600);
 	runTrapezoid(0.4, 0.25, 600);
@@ -397,7 +388,7 @@ void opcontrol() {
 	//middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	//frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	//frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	//cata.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	wing.set_value(false);
 	

@@ -9,6 +9,7 @@
 #include <bits/stdc++.h>
 #include "pros/misc.h"
 #include "chassis.h"
+#include "cata.h"
 
 using namespace okapi;
 

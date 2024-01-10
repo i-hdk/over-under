@@ -15,24 +15,40 @@ Chassis* Chassis::getInstance(){
     return instance;
 }
 
-/**
-    * @brief Set the Left Voltage object
-    * 
-    * @param volt [-128,127]
-    */
+void Chassis::initialize(){
+    backL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	backR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+}
+
 void Chassis::setLeftVoltage(int volt){
     backL = volt;
     frontL = volt;
     middleL = volt;
 }
 
-/**
-    * @brief Set the Right Voltage object
-    * 
-    * @param volt [-128,127]
-    */
 void Chassis::setRightVoltage(int volt){
     backR = volt;
     frontR = volt;
     middleR = volt;
+}
+
+void Chassis::setRightVelocity(int vel){
+	backR.move_velocity(vel);
+	middleR.move_velocity(vel);
+	frontR.move_velocity(vel);
+}
+
+void Chassis::setLeftVelocity(int vel){
+	backL.move_velocity(vel);
+	middleL.move_velocity(vel);
+	frontL.move_velocity(vel);
+}
+
+void Chassis::setDriveVelocity(int leftVel, int rightVel){
+    setRightVelocity(rightVel);
+    setLeftVelocity(leftVel);
 }
