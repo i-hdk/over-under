@@ -87,8 +87,9 @@ void competition_initialize() {}
 
 
 void autonomous() {
-	MotionProfile::getInstance()->trapezoidal(0.2,0.3,600);
-	
+	//MotionProfile::getInstance()->trapezoidal(0.2,0.3,600);
+	MotionProfile* autoMotion = MotionProfile::getInstance();
+	autoMotion->runTurnPID(-90, 100);
 }
 
 /**
@@ -117,6 +118,7 @@ void autonomous() {
 
 void opcontrol(){
 	Teleop teleop;
+	MotionProfile::getInstance()->disableAuto();
 	while (true) {
 		teleop.periodic();
 		pros::delay(20);

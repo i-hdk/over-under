@@ -15,7 +15,9 @@ class MotionProfile{
     static MotionProfile* instance;
     bool isRunning;
     std::chrono::steady_clock::time_point startTime;
-    double accelerationTime, constantTime, flatVelocity;
+    double accelerationTime, constantTime, flatVelocity, turnTarget, turnPrevError, turnTotalError, timeOut;
+    double turnP,turnI,turnD;
+    bool overTurn, overTurnRight, overTurnFirst, overTurnLeft;
     enum profile{
     trapezoid,
     turnPID
@@ -27,8 +29,11 @@ class MotionProfile{
     MotionProfile();
 
     void trapezoidal(double aT, double cT, double fV);
-
+    void runTurnPID(double angle, double timelimit);
+    void runTurnPID(double angle, double timelimit, bool longturn);
+    std::pair<double,bool> angleDifference(double target, double current);
     void update();
+    void disableAuto();
 
     static void initialize();
 };

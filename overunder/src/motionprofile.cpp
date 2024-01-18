@@ -14,6 +14,10 @@ void MotionProfile::initialize(){
 
 MotionProfile::MotionProfile(){
   isRunning = 0;
+  turnP = 4;
+  turnI = 0;//0.01;
+  turnD = 0;//1;
+  overTurn = 0;
 }
 
 void MotionProfile::trapezoidal(double aT, double cT, double fV){
@@ -25,19 +29,91 @@ void MotionProfile::trapezoidal(double aT, double cT, double fV){
   isRunning = 1;
 }
 
-std::pair<double,bool> angleDifference(double target, double current){
+void MotionProfile::runTurnPID(double angle, double timelimit){
+  overTurn = 0;
+  turnTarget = angle;
+  timeOut = timelimit;
+  turnTotalError = 0;
+  turnPrevError = angleDifference(angle, imu.get_heading()).first;
+  startTime = std::chrono::steady_clock::now();
+  type = turnPID;
+  isRunning = 1;
+}
+
+//not rly functional
+void MotionProfile::runTurnPID(double angle, double timelimit, bool longturn){
+  overTurn = longturn;
+  overTurnRight = 0;
+  overTurnFirst = 0;
+  overTurnLeft = 0;
+  turnTarget = angle;
+  timeOut = timelimit;
+  turnTotalError = 0;
+  turnPrevError = angleDifference(angle, imu.get_heading()).first;
+  startTime = std::chrono::steady_clock::now();
+  type = turnPID;
+  isRunning = 1;
+}
+
+void MotionProfile::disableAuto(){
+  isRunning = 0;
+}
+
+/**
+ * @brief returns closest angle + turnRight or not
+ * 
+ * @param target 
+ * @param current 
+ * @return std::pair<double,bool> 
+ */
+std::pair<double,bool> MotionProfile::angleDifference(double target, double current){
   double leftDist, rightDist;
+  while(target<0) target+=360;
+  while(target>360) target-=360;
   if(target>current){
     leftDist = 360-target + current;
     rightDist = target-current;
   }
   else{
-
+    leftDist = current-target;
+    rightDist = 360-current + target;
   }
-  return std::make_pair(2.3,1);
+  int xxx = 1;
+  while(xxx--){
+    if(overTurn){
+      if(overTurnFirst==0) overTurnFirst = 1;
+      if(leftDist < rightDist){
+        if(overTurnLeft){
+          overTurn = 0;
+          break;
+        }
+        overTurnRight = 1;
+        return std::make_pair(rightDist,1);
+      }
+      else{
+        overTurnLeft = 1;
+        if(overTurnRight){
+          overTurn = 0;
+          break;
+        }
+        return std::make_pair(leftDist,0);
+      }
+    }
+  }
+  if(leftDist < rightDist){
+    return std::make_pair(leftDist,0);
+  }
+  else{
+    return std::make_pair(rightDist,1);
+  }
 }
 
 void MotionProfile::update(){
+  //debug:
+  print("angle diff func",angleDifference(90,imu.get_heading()).first,0);
+  print("right to 90",angleDifference(90, imu.get_heading()).second,1);
+  print("imu", imu.get_heading(),2);
+
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   double t = (std::chrono::duration_cast<std::chrono::microseconds>(end - startTime).count()) /1000000.0;
   if(isRunning&&type==trapezoid){
@@ -58,7 +134,28 @@ void MotionProfile::update(){
     Chassis::getInstance()->setDriveVelocity(vel,vel);
   }
   if(isRunning&&type==turnPID){
-
+    double error = angleDifference(turnTarget, imu.get_heading()).first;
+    bool right = angleDifference(turnTarget, imu.get_heading()).second;
+    if(abs(error)>1){
+      double vel = turnP*error+turnI*turnTotalError+turnD*(error-turnPrevError);
+      if(!right){
+        Chassis::getInstance()->setDriveVelocity(-vel,vel);
+      }
+      else{
+      Chassis::getInstance()->setDriveVelocity(vel,-vel);
+      }
+    }
+    else{
+      Chassis::getInstance()->setDriveVelocity(0,0);
+      //isRunning = 0;
+    }
+    turnPrevError = error;
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    double t = (std::chrono::duration_cast<std::chrono::microseconds>(end - startTime).count()) /1000000.0;
+    if(t>=timeOut){
+      Chassis::getInstance()->setDriveVelocity(0,0);
+      isRunning = 0;
+    }
   }
 }
 
