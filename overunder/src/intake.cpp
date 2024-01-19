@@ -18,6 +18,9 @@ void Intake::runOut(){
 void Intake::run(int vel){
     intake.move_velocity(vel);
 }
+void Intake::stop(){
+    intake.move_velocity(0);
+}
 
 void Intake::initialize(){
     intake.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);

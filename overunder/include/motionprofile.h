@@ -34,6 +34,9 @@ class MotionProfile{
     std::pair<double,bool> angleDifference(double target, double current);
     void update();
     void disableAuto();
+    void setHeading(double h);
+
+    bool inMotion();
 
     static void initialize();
 };

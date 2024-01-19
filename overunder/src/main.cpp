@@ -5,7 +5,14 @@
 #include <bits/stdc++.h>
 #include "teleop.h"
 #include "motionprofile.h"
+#include "left.h"
+#include "right.h"
 using namespace okapi;
+
+/**
+ * TODO:
+ * TEST TELEOP WINGS, intake	s
+ */
 
 double width = 11.75;
 double vel_conversion = 1/6.5*60; //final has to be in rpm, so maybe move certain rotations & measure distance
@@ -56,40 +63,11 @@ void disabled() {}
  */
 void competition_initialize() {}
 
-/**
- * Runs the user autonomous code. This function will be started in its own task
- * with the default priority and stack size whenever the robot is enabled via
- * the Field Management System or the VEX Competition Switch in the autonomous
- * mode. Alternatively, this function may be called in initialize or opcontrol
- * for non-competition testing purposes.
- *
- * If the robot is disabled or communications is lost, the autonomous task
- * will be stopped. Re-enabling the robot will restart the task, not re-start it
- * from where it left off.
- */
-
-//assuming wont turn over the 0/360 border
-
-// void turnPID(double angle, double timeOut){
-// 	turnTarget = angle;
-// 	toggleTurnPID=1;
-// 	begin = std::chrono::steady_clock::now();
-// 	while(toggleTurnPID){
-// 		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-// 		t = (std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count()) /1000000.0;
-// 		if(t>=timeOut) break;
-// 		pros::delay(20);
-// 	}
-// 	toggleTurnPID = 0;
-// 	setLeftVelocity(0);
-// 	setRightVelocity(0);
-// }
-
-
 void autonomous() {
+	Right::run();
 	//MotionProfile::getInstance()->trapezoidal(0.2,0.3,600);
-	MotionProfile* autoMotion = MotionProfile::getInstance();
-	autoMotion->runTurnPID(-90, 100);
+	//MotionProfile* autoMotion = MotionProfile::getInstance();
+	//autoMotion->runTurnPID(-90, 100);
 }
 
 /**

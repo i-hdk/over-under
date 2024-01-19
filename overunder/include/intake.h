@@ -14,6 +14,7 @@ class Intake{
     static Intake* getInstance();
     void runIn();
     void runOut();
+    void stop();
     void run(int vel);
     static void initialize();
 };

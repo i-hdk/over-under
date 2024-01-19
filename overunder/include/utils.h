@@ -35,4 +35,6 @@ void print(std::string text, int value, int line);
  */
 void print(std::string text, double value, int line);
 
+void wait(double t);
+
 #endif

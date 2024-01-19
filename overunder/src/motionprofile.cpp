@@ -108,6 +108,10 @@ std::pair<double,bool> MotionProfile::angleDifference(double target, double curr
   }
 }
 
+bool MotionProfile::inMotion(){
+  return isRunning;
+}
+
 void MotionProfile::update(){
   //debug:
   print("angle diff func",angleDifference(90,imu.get_heading()).first,0);
@@ -136,7 +140,7 @@ void MotionProfile::update(){
   if(isRunning&&type==turnPID){
     double error = angleDifference(turnTarget, imu.get_heading()).first;
     bool right = angleDifference(turnTarget, imu.get_heading()).second;
-    if(abs(error)>1){
+    if(abs(error)>2){ //1
       double vel = turnP*error+turnI*turnTotalError+turnD*(error-turnPrevError);
       if(!right){
         Chassis::getInstance()->setDriveVelocity(-vel,vel);
@@ -157,5 +161,9 @@ void MotionProfile::update(){
       isRunning = 0;
     }
   }
+}
+
+void MotionProfile::setHeading(double h){
+  imu.set_heading(h);
 }
 
