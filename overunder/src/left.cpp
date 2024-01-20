@@ -5,6 +5,9 @@ void Left::run(){
     Wing* wings = Wing::getInstance();
     Cata* cata = Cata::getInstance();
     MotionProfile* motion = MotionProfile::getInstance();
+
+
+    
     intake->runOut();
     wait(1000);
     intake->stop();

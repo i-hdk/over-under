@@ -58,6 +58,12 @@ void Teleop::periodic(){
 
     Wing* wing = Wing::getInstance();
     if(toggle(pros::E_CONTROLLER_DIGITAL_L1)) wing->change();
+    else if(toggle(pros::E_CONTROLLER_DIGITAL_LEFT)) wing->out();
+    else if(toggle(pros::E_CONTROLLER_DIGITAL_RIGHT)) wing->in();
+    Blocker* blocker = Blocker::getInstance();
+    if(toggle(pros::E_CONTROLLER_DIGITAL_L2)) blocker->change();
+    else if(toggle(pros::E_CONTROLLER_DIGITAL_UP)) blocker->out();
+    else if(toggle(pros::E_CONTROLLER_DIGITAL_DOWN)) blocker->in();
 
     for(auto u:buttons) prev[u] = master.get_digital(u);
 }

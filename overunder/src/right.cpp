@@ -5,6 +5,10 @@ void Right::run(){
     Wing* wings = Wing::getInstance();
     Cata* cata = Cata::getInstance();
     MotionProfile* motion = MotionProfile::getInstance();
+
+    intake->runOut();
+    wait(500);
+
     intake->runIn();
     motion->trapezoidal(0.28, 0.54, 600); //0.53
     while(motion->inMotion()==1) pros::delay(10);

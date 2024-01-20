@@ -41,6 +41,7 @@ void initialize() {
 	Intake::initialize();	
 	Chassis::initialize();
 	Wing::initialize();
+	Blocker::initialize();
 	MotionProfile::initialize();
 	pros::Task my_task(backgroundTask);
 }
@@ -65,9 +66,6 @@ void competition_initialize() {}
 
 void autonomous() {
 	Right::run();
-	//MotionProfile::getInstance()->trapezoidal(0.2,0.3,600);
-	//MotionProfile* autoMotion = MotionProfile::getInstance();
-	//autoMotion->runTurnPID(-90, 100);
 }
 
 /**

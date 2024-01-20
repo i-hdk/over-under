@@ -12,6 +12,7 @@
 #include "cata.h"
 #include "intake.h"
 #include "wing.h"
+#include "blocker.h"
 
 using namespace okapi;
 
