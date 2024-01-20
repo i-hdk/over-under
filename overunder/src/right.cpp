@@ -7,13 +7,23 @@ void Right::run(){
     MotionProfile* motion = MotionProfile::getInstance();
 
     intake->runOut();
-    wait(500);
+    cata->setTime(0.17);
+    while(cata->isRunning()){
+        cata->periodic();
+        wait(10);
+    }
+    intake->stop();
+    cata->setStop(31500,36000);
+    while(cata->isRunning()){
+        cata->periodic();
+        wait(10);
+    }
 
     intake->runIn();
-    motion->trapezoidal(0.28, 0.54, 600); //0.53
+    motion->trapezoidal(0.28, 0.54, 600); //0.54
     while(motion->inMotion()==1) pros::delay(10);
     intake->stop();
-    motion->runTurnPID(90,0.5);//90 87
+    motion->runTurnPID(70,0.5);//90 87 85 75
     while(motion->inMotion()==1) pros::delay(10);
 
     intake->runOut();
@@ -24,57 +34,65 @@ void Right::run(){
     while(motion->inMotion()==1) pros::delay(10);
 
     //get 2nd tribal
-    motion->trapezoidal(0.1, 0.2, 200);
+    motion->trapezoidal(0.2, 0.2, 250); //0.1 0.2 250
     while(motion->inMotion()==1) pros::delay(10);
     intake->runIn();
-    motion->runTurnPID(-40,0.3);
+    motion->runTurnPID(-20,0.8); //-40 -13
     while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.1, 0.2, 200);
+    motion->trapezoidal(0.2, 0.2, 200); //0.1, 0.2, 200
     while(motion->inMotion()==1) pros::delay(10);
     motion->runTurnPID(90,0.5); 
     while(motion->inMotion()==1) pros::delay(10);
     intake->runOut();
     wait(500);
+    motion->trapezoidal(0.1, 0.1, -100); //new
+     while(motion->inMotion()==1) pros::delay(10); //new
     motion->runTurnPID(-80,0.5); 
     while(motion->inMotion()==1) pros::delay(10);
-    // motion->trapezoidal(0.1, 0.2, -400);
-    // while(motion->inMotion()==1) pros::delay(10);
+
+    // motion->trapezoidal(0.1, 0.2, -200);
+     //while(motion->inMotion()==1) pros::delay(10);
     // motion->trapezoidal(0.1, 0.2, 250);
     // while(motion->inMotion()==1) pros::delay(10);
 
     //get 3rd tribal
-    motion->runTurnPID(-73,0.3); 
+    motion->runTurnPID(-63,0.3); //-73
     while(motion->inMotion()==1) pros::delay(10);
     intake->runIn();
-    motion->trapezoidal(0.2, 0.2, 600); //0.2 0.2
+    motion->trapezoidal(0.15, 0.2, 600); //0.18 0.2
     while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.2, 0.2, -600); // 0.2 0.15
+    motion->trapezoidal(0.2, 0.27, -600); // 0.2 0.3
     while(motion->inMotion()==1) pros::delay(10);
-    motion->runTurnPID(90,0.5); 
+    motion->runTurnPID(100,0.9); //90
     while(motion->inMotion()==1) pros::delay(10);
     intake->runOut();
     wait(500);
-    motion->runTurnPID(-90,0.5); 
-    while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.1, 0.1, -600); //-500
-    while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.1, 0.2, 250);
-    while(motion->inMotion()==1) pros::delay(10);
+    //motion->runTurnPID(-90,0.5); 
+    //while(motion->inMotion()==1) pros::delay(10);
+    //motion->trapezoidal(0.1, 0.1, -600); //-500
+    //while(motion->inMotion()==1) pros::delay(10);
+    //motion->trapezoidal(0.1, 0.2, 250);
+    //while(motion->inMotion()==1) pros::delay(10);
+
+    //motion->trapezoidal(0.1, 0.2, -250);
+    //while(motion->inMotion()==1) pros::delay(10);
 
     //4th triball
-    motion->runTurnPID(-120,0.25); //-118
+    motion->runTurnPID(-120,0.7); //-118
     intake->runIn();
     while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.15, 0.3, 600); 
+    motion->trapezoidal(0.17, 0.3, 600); //0.15 0.3
     while(motion->inMotion()==1) pros::delay(10);
     motion->trapezoidal(0.1, 0.2, -600); //0.2 0.2
     while(motion->inMotion()==1) pros::delay(10);
-    motion->runTurnPID(90,0.5); 
+    motion->runTurnPID(78,0.7); //85 0.5
     while(motion->inMotion()==1) pros::delay(10);
     intake->runOut();
-    wait(500);
-    motion->runTurnPID(-100,1); 
-    while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0, 1, -600); //0.2 0.2
-    while(motion->inMotion()==1) pros::delay(10);
+        motion->trapezoidal(0.3, 0.5, 600); 
+    // wait(300);
+    // motion->runTurnPID(-100,1); //-110
+    // while(motion->inMotion()==1) pros::delay(10);
+    // Chassis::getInstance()->coast();
+    // motion->trapezoidal(0, 1, -600); //0.2 0.2
+    // while(motion->inMotion()==1) pros::delay(10);
 }

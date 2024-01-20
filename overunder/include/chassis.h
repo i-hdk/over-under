@@ -34,6 +34,7 @@ class Chassis{
         void setLeftVelocity(int vel);
         void setDriveVelocity(int leftVel, int rightVel);
         static void initialize();
+        void coast();
 };
 
 #endif

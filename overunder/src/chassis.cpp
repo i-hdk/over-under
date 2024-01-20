@@ -24,6 +24,14 @@ void Chassis::initialize(){
 	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
+void Chassis::coast(){
+    backL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	backR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	middleL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	middleR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	frontL.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+	frontR.set_brake_mode(pros::E_MOTOR_BRAKE_COAST);
+}
 void Chassis::setLeftVoltage(int volt){
     backL = volt;
     frontL = volt;

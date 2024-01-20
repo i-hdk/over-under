@@ -93,6 +93,7 @@ void autonomous() {
  bool leftPrev = 0;
 
 void opcontrol(){
+	Chassis::initialize();
 	Teleop teleop;
 	MotionProfile::getInstance()->disableAuto();
 	while (true) {

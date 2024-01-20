@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "multifile test",
+    "project_name": "right multifile",
     "target": "v5",
     "templates": {
       "kernel": {

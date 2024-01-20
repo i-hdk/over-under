@@ -1,7 +1,7 @@
 #include "blocker.h"
 Blocker* Blocker::instance = nullptr;
 
-pros::ADIDigitalOut blocker ('H');
+pros::ADIDigitalOut blocker ('A');
 
 Blocker* Blocker::getInstance(){
     if(instance==nullptr) instance = new Blocker();
@@ -10,6 +10,7 @@ Blocker* Blocker::getInstance(){
 void Blocker::initialize(){
     blocker.set_value(false);
 }
+
 Blocker::Blocker(){
     blockerOut = 0;
 }

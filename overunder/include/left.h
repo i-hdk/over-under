@@ -13,6 +13,7 @@
 #include "intake.h"
 #include "wing.h"
 #include "motionprofile.h"
+#include "blocker.h"
 using namespace okapi;
 
 class Left{
