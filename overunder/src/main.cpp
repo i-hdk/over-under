@@ -65,7 +65,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
-	Right::run();
+	Left::run();
 }
 
 /**

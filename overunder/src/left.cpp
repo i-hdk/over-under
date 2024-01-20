@@ -21,16 +21,19 @@ Blocker* blocker = Blocker::getInstance();
     wait(1000);
      motion->runTurnPID(180-40,2); 
     while(motion->inMotion()==1) pros::delay(10);
-    motion->runTurnPID(100,2); //105
+
+//
+ wings->in();
+    motion->runTurnPID(100,2); //100
     while(motion->inMotion()==1) pros::delay(10);
-    wings->in();
-    cata->setStop(31500,36000);
+   //blocker->out();
+    //cata->setStop(31500,36000);
     while(cata->isRunning()){
         cata->periodic();
         wait(10);
     }
     //might have to add delay & wait for cata to finish running
     intake->runOut();
-    motion->trapezoidal(0.35,0.4,500);
+    motion->trapezoidal(0.35,0.4,500); //+
     //blocker->out();
 }
