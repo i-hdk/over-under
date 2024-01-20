@@ -65,6 +65,7 @@ void disabled() {}
 void competition_initialize() {}
 
 void autonomous() {
+	//MotionProfile::getInstance()->runTurnPID(90,1);
 	Left::run();
 }
 

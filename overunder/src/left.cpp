@@ -24,7 +24,7 @@ Blocker* blocker = Blocker::getInstance();
 
 //
  wings->in();
-    motion->runTurnPID(100,2); //100
+    motion->runTurnPID(105,2); //100
     while(motion->inMotion()==1) pros::delay(10);
    //blocker->out();
     //cata->setStop(31500,36000);
@@ -32,8 +32,10 @@ Blocker* blocker = Blocker::getInstance();
         cata->periodic();
         wait(10);
     }
-    //might have to add delay & wait for cata to finish running
     intake->runOut();
-    motion->trapezoidal(0.35,0.4,500); //+
-    //blocker->out();
+
+
+
+    motion->trapezoidal(0.35,0.4,500); //+ trust the opponents to touch the bar???
+
 }

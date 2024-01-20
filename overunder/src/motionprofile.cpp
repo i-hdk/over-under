@@ -14,7 +14,7 @@ void MotionProfile::initialize(){
 
 MotionProfile::MotionProfile(){
   isRunning = 0;
-  turnP = 4;
+  turnP = 4; //4
   turnI = 0;//0.01;
   turnD = 0;//1;
   overTurn = 0;
