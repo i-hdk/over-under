@@ -1,26 +1,31 @@
 #include "blocker.h"
 Blocker* Blocker::instance = nullptr;
 
-pros::ADIDigitalOut blocker ('A');
+pros::ADIDigitalOut outBlocker ('A');
+//pros::ADIDigitalOut inBlocker ('A');
 
 Blocker* Blocker::getInstance(){
     if(instance==nullptr) instance = new Blocker();
     return instance;
 }
 void Blocker::initialize(){
-    blocker.set_value(false);
+    outBlocker.set_value(0);
+    //inBlocker.set_value(1);
+    
 }
 
 Blocker::Blocker(){
     blockerOut = 0;
 }
 void Blocker::out(){
-    blocker.set_value(true);
+    outBlocker.set_value(true);
+    //inBlocker.set_value(0);
     blockerOut = 1;
 }
 
 void Blocker::in(){
-    blocker.set_value(0);
+    outBlocker.set_value(0);
+    //inBlocker.set_value(1);
     blockerOut = 0;
 }
 

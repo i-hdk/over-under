@@ -37,7 +37,7 @@ void Right::run(){
     motion->trapezoidal(0.2, 0.2, 250); //0.1 0.2 250
     while(motion->inMotion()==1) pros::delay(10);
     intake->runIn();
-    motion->runTurnPID(-20,0.8); //-40 -13
+    motion->runTurnPID(-25,0.8); //-40 -13 -20
     while(motion->inMotion()==1) pros::delay(10);
     motion->trapezoidal(0.2, 0.2, 200); //0.1, 0.2, 200
     while(motion->inMotion()==1) pros::delay(10);
@@ -56,7 +56,7 @@ void Right::run(){
     // while(motion->inMotion()==1) pros::delay(10);
 
     //get 3rd tribal
-    motion->runTurnPID(-63,0.3); //-73
+    motion->runTurnPID(-63,0.3); //-73s
     while(motion->inMotion()==1) pros::delay(10);
     intake->runIn();
     motion->trapezoidal(0.15, 0.2, 600); //0.18 0.2
@@ -85,7 +85,7 @@ void Right::run(){
     while(motion->inMotion()==1) pros::delay(10);
     motion->trapezoidal(0.1, 0.2, -600); //0.2 0.2
     while(motion->inMotion()==1) pros::delay(10);
-    motion->runTurnPID(78,0.7); //85 0.5
+    motion->runTurnPID(68,0.7); //87 0.7
     while(motion->inMotion()==1) pros::delay(10);
     intake->runOut();
         motion->trapezoidal(0.3, 0.5, 600); 

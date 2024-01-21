@@ -137,7 +137,7 @@ void MotionProfile::update(){
     }
     Chassis::getInstance()->setDriveVelocity(vel,vel);
   }
-  if(isRunning&&type==turnPID){
+  else if(isRunning&&type==turnPID){
     double error = angleDifference(turnTarget, imu.get_heading()).first;
     bool right = angleDifference(turnTarget, imu.get_heading()).second;
     if(abs(error)>2){ //1
