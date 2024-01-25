@@ -9,10 +9,7 @@
 #include "right.h"
 using namespace okapi;
 
-/**
- * TODO:
- * TEST TELEOP WINGS, intake	s
- */
+//HIIIIIII
 
 double width = 11.75;
 double vel_conversion = 1/6.5*60; //final has to be in rpm, so maybe move certain rotations & measure distance
