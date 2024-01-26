@@ -61,7 +61,7 @@ void Right::run(){
     intake->runIn();
     motion->trapezoidal(0.15, 0.2, 600); //0.18 0.2
     while(motion->inMotion()==1) pros::delay(10);
-    motion->trapezoidal(0.2, 0.27, -600); // 0.2 0.3
+    motion->trapezoidal(0.2, 0.27, -600); // 0.2 0.3 #Izz, we back up a bit too much
     while(motion->inMotion()==1) pros::delay(10);
     motion->runTurnPID(100,0.9); //90
     while(motion->inMotion()==1) pros::delay(10);
