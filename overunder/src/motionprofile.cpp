@@ -20,6 +20,33 @@ MotionProfile::MotionProfile(){
   overTurn = 0;
 }
 
+void MotionProfile::runPath(){
+  std::string filename = "test.txt";
+    std::ifstream file(filename);
+
+    if (!file.is_open()) {
+        std::cerr << "Unable to open file " << filename << std::endl;
+    }
+
+    std::string line;
+    while (std::getline(file, line)) {
+      std::istringstream iss(line);
+       int num;
+       std::vector<int> numbers;
+      while (iss >> num) {
+        numbers.push_back(num);
+      }
+      time.push_back(numbers[0]);
+      length.push_back(numbers[1]);
+      radius.push_back(numbers[2]);
+    }
+
+    file.close();
+      startTime = std::chrono::steady_clock::now();
+
+  isRunning = 1;
+}
+
 void MotionProfile::trapezoidal(double aT, double cT, double fV){
   startTime = std::chrono::steady_clock::now();
   type = trapezoid;
@@ -159,6 +186,30 @@ void MotionProfile::update(){
     if(t>=timeOut){
       Chassis::getInstance()->setDriveVelocity(0,0);
       isRunning = 0;
+    }
+  }
+  else if(isRunning&&type==path){
+    int curr = -1;
+    for(int i = 0; i < time.size(); i++){
+      if(time[i]>t){
+        curr = i;
+        break;
+      }
+    }
+    if(curr==-1){
+      isRunning = 0;
+      Chassis::getInstance()->setDriveVelocity(0,0);
+    }
+    else{
+      double unityScale = 12;
+      double halfWidth = 3;
+      length[curr]*=unityScale;
+      radius[curr]*=unityScale;
+      time[curr]*=10;
+      double linVel = curr>0 ? length[curr]/(time[curr]-time[curr-1]) : 0;
+      double omega = linVel/radius[curr];
+      Chassis::getInstance()->setDriveVelocity(abs(radius[curr]-halfWidth)*omega,abs(radius[curr]+halfWidth)*omega); 
+      //need to calculate inch to seconds conversion bc setDriveVelocity uses rpm: /(inch per rotation)*60
     }
   }
 }

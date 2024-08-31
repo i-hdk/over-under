@@ -6,6 +6,11 @@ void Right::run(){
     Cata* cata = Cata::getInstance();
     MotionProfile* motion = MotionProfile::getInstance();
 
+    motion->runPath(); 
+    while(motion->inMotion()==1) pros::delay(10);
+
+
+    /*
     intake->runOut();
     cata->setTime(0.17);
     while(cata->isRunning()){
@@ -95,4 +100,5 @@ void Right::run(){
     // Chassis::getInstance()->coast();
     // motion->trapezoidal(0, 1, -600); //0.2 0.2
     // while(motion->inMotion()==1) pros::delay(10);
+    */
 }

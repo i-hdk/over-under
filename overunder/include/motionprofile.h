@@ -8,6 +8,7 @@
 #include <bits/stdc++.h>
 #include "pros/misc.h"
 #include "chassis.h"
+#include <fstream>
 using namespace okapi;
 
 class MotionProfile{
@@ -18,9 +19,13 @@ class MotionProfile{
     double accelerationTime, constantTime, flatVelocity, turnTarget, turnPrevError, turnTotalError, timeOut;
     double turnP,turnI,turnD;
     bool overTurn, overTurnRight, overTurnFirst, overTurnLeft;
+    std::vector<double> time;
+    std::vector<double> length;
+    std::vector<double> radius;
     enum profile{
     trapezoid,
-    turnPID
+    turnPID,
+    path
     };
     profile type;
 
@@ -29,6 +34,7 @@ class MotionProfile{
     MotionProfile();
 
     void trapezoidal(double aT, double cT, double fV);
+    void runPath();
     void runTurnPID(double angle, double timelimit);
     void runTurnPID(double angle, double timelimit, bool longturn);
     std::pair<double,bool> angleDifference(double target, double current);
