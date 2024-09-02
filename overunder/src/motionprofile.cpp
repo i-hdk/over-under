@@ -21,18 +21,21 @@ MotionProfile::MotionProfile(){
 }
 
 void MotionProfile::runPath(){
-  std::string filename = "test.txt";
+  std::string filename = "/usd/test.txt";
     std::ifstream file(filename);
 
     if (!file.is_open()) {
-        std::cerr << "Unable to open file " << filename << std::endl;
+        //std::cerr << "Unable to open file " << filename << std::endl;
+        	pros::lcd::set_text(5, "unable to open file");
     }
+    else         	pros::lcd::set_text(5, "file open success");
+
 
     std::string line;
     while (std::getline(file, line)) {
       std::istringstream iss(line);
-       int num;
-       std::vector<int> numbers;
+       double num;
+       std::vector<double> numbers;
       while (iss >> num) {
         numbers.push_back(num);
       }
@@ -45,6 +48,13 @@ void MotionProfile::runPath(){
       startTime = std::chrono::steady_clock::now();
 
   isRunning = 1;
+  type = path;
+  double unityScale = 10;
+  for(int i = 0; i < time.size(); i++){
+    time[i]*=5.0;
+    length[i]*=unityScale;
+    radius[i]*=unityScale;
+  }
 }
 
 void MotionProfile::trapezoidal(double aT, double cT, double fV){
@@ -141,12 +151,20 @@ bool MotionProfile::inMotion(){
 
 void MotionProfile::update(){
   //debug:
-  print("angle diff func",angleDifference(90,imu.get_heading()).first,0);
-  print("right to 90",angleDifference(90, imu.get_heading()).second,1);
-  print("imu", imu.get_heading(),2);
+  //print("right to 90",angleDifference(90, imu.get_heading()).second,1);
+  //print("time4", time[4],2);
+  //	pros::lcd::set_text(1, "Hello PROS User!");
+  if(type==path){    	pros::lcd::set_text(1, "pathhh");
+
+}
+  else print("mode",type,1);
+
 
   std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
   double t = (std::chrono::duration_cast<std::chrono::microseconds>(end - startTime).count()) /1000000.0;
+  //  print("time",t,0);
+
+
   if(isRunning&&type==trapezoid){
     double vel;
     if(t<=accelerationTime){
@@ -189,8 +207,12 @@ void MotionProfile::update(){
     }
   }
   else if(isRunning&&type==path){
+                //Chassis::getInstance()->setDriveVelocity(50,50); 
+
     int curr = -1;
     for(int i = 0; i < time.size(); i++){
+               print("time",time[i],3);
+
       if(time[i]>t){
         curr = i;
         break;
@@ -201,16 +223,22 @@ void MotionProfile::update(){
       Chassis::getInstance()->setDriveVelocity(0,0);
     }
     else{
-      double unityScale = 12;
-      double halfWidth = 3;
-      length[curr]*=unityScale;
-      radius[curr]*=unityScale;
-      time[curr]*=10;
+      double halfWidth = 5;
+      //length[curr]*=unityScale;
+      //radius[curr]*=unityScale;
+      //time[curr]*=10;
       double linVel = curr>0 ? length[curr]/(time[curr]-time[curr-1]) : 0;
-      double omega = linVel/radius[curr];
-      Chassis::getInstance()->setDriveVelocity(abs(radius[curr]-halfWidth)*omega,abs(radius[curr]+halfWidth)*omega); 
+      double omega = abs(linVel/radius[curr]*10);
+    Chassis::getInstance()->setDriveVelocity(abs(radius[curr]-halfWidth)*omega,abs(radius[curr]+halfWidth)*omega); 
+            //Chassis::getInstance()->setDriveVelocity(50,50); 
+            double a = abs(radius[curr]-halfWidth)*omega;
+              print("left vel",a,0);
+
+
       //need to calculate inch to seconds conversion bc setDriveVelocity uses rpm: /(inch per rotation)*60
     }
+                  // print("curr",curr,0);
+
   }
 }
 
