@@ -22,6 +22,8 @@ class MotionProfile{
     std::vector<double> time;
     std::vector<double> length;
     std::vector<double> radius;
+    std::vector<double> linVel;
+    std::vector<double> angVel;
     enum profile{
     trapezoid,
     turnPID,
