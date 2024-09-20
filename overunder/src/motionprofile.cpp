@@ -192,8 +192,8 @@ void MotionProfile::update(){
   }
   else if(isRunning&&type==path){  
       //IMPORTANT!!! INPUT THESE CONSTANTS  
-      double halfWidth = 5; // half width of robot in inches
-      double inches_per_rotation = 5;
+      double halfWidth = 6; // half width of robot in inches
+      double inches_per_rotation = 36.0/60.0*3.25*3.14159; //wheel diameter: 3.25in gear ratio: 36:60 --> each rotation: 36/60*3.25*pi
       double stop_tolerance = 0.00001; //in inches per sec
 
       int curTime = t*1000;
